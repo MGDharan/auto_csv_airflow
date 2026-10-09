@@ -21,7 +21,7 @@ def test_csv_cleaning_pipeline_exists(dag_bag):
     assert dag is not None, "DAG 'csv_cleaning_pipeline' was not found"
     assert dag.dag_id == "csv_cleaning_pipeline"
     assert dag.catchup is False
-    assert dag.schedule_interval is None
+    assert dag.schedule_interval is None or str(dag.schedule_interval) == "None" or dag.timetable.summary == "None"
 
 
 def test_csv_cleaning_pipeline_task_dependencies(dag_bag):

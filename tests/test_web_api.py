@@ -50,7 +50,7 @@ def test_upload_valid_file(client, tmp_path, monkeypatch):
         def json(self):
             return {"dag_run_id": "test_run"}
 
-    monkeypatch.setattr("requests.post", lambda *args, **kwargs: MockResponse())
+    monkeypatch.setattr(web_module.requests, "post", lambda *args, **kwargs: MockResponse())
 
     csv_data = b"id,name,age,email,salary\n1,Alice,25,a@b.com,100\n"
     response = client.post(

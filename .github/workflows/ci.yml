@@ -59,13 +59,20 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
 
-      - name: Run Pytest Suite
+      - name: Initialize Airflow DB
         env:
           AIRFLOW__CORE__LOAD_EXAMPLES: "False"
-          AIRFLOW__CORE__UNIT_TEST_MODE: "True"
           AIRFLOW_HOME: ${{ github.workspace }}/airflow_home
         run: |
           mkdir -p airflow_home
+          airflow db migrate
+
+      - name: Run Pytest Suite
+        env:
+          AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+          AIRFLOW_HOME: ${{ github.workspace }}/airflow_home
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
           pytest -v tests/
 
   docker-build-check:
