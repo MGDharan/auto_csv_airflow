@@ -1,0 +1,59 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: etl_db
+      MYSQL_USER: etluser
+      MYSQL_PASSWORD: etlpassword
+
+    ports:
+      - "3307:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+
+  airflow:
+    build: .
+
+    depends_on:
+      - mysql
+
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__API__AUTH_BACKENDS=airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./uploads:/opt/airflow/uploads
+      - ./cleaned:/opt/airflow/cleaned
+
+    command: standalone
+
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+
+    depends_on:
+      - airflow
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./web:/app/web
+      - ./uploads:/app/uploads
+
+
+volumes:
+  mysql_data:
