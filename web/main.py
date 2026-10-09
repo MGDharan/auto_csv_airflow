@@ -9,13 +9,18 @@ import re
 
 app = FastAPI()
 
-UPLOAD_DIR = "/app/uploads"
+UPLOAD_DIR = os.environ.get(
+    "UPLOAD_DIR",
+    "/app/uploads" if os.path.exists("/app/uploads") else os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
+)
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+HTML_FILE_PATH = "/app/web/index.html" if os.path.exists("/app/web/index.html") else os.path.join(os.path.dirname(__file__), "index.html")
 
 
 @app.get("/", response_class=HTMLResponse)
 def home():
-    with open("/app/web/index.html", "r", encoding="utf-8") as file:
+    with open(HTML_FILE_PATH, "r", encoding="utf-8") as file:
         return file.read()
 
 

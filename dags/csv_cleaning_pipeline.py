@@ -7,8 +7,8 @@ import numpy as np
 import os
 import mysql.connector
 
-UPLOAD_DIR = "/opt/airflow/uploads"
-CLEANED_DIR = "/opt/airflow/cleaned"
+UPLOAD_DIR = os.environ.get("AIRFLOW_UPLOAD_DIR", "/opt/airflow/uploads")
+CLEANED_DIR = os.environ.get("AIRFLOW_CLEANED_DIR", "/opt/airflow/cleaned")
 ALLOWED_EXTENSIONS = (".csv", ".tsv", ".tab", ".txt", ".xlsx", ".xls")
 
 
